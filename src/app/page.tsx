@@ -2,23 +2,25 @@
 import { useEffect, useState } from "react";
 import { fetchUsers, User } from "./utils/utils";
 import SearchBar from "./components/SearchBar";
+import { useDebounce } from "./hooks/useDebounce";
 
 export default function Demo() {
   const [loading, setLoading] = useState(false);
   const [search, setSearch] = useState("");
   const [users, setUsers] = useState<User[]>([]);
+  const debouncedSearch = useDebounce(search, 500);
 
   useEffect(() => {
     const loadUsers = async () => {
       setLoading(true);
 
-      const users = await fetchUsers(search);
+      const users = await fetchUsers(debouncedSearch);
       setUsers(users);
 
       setLoading(false);
     };
     loadUsers();
-  }, [search]);
+  }, [debouncedSearch]);
 
   return (
     <div className="tutorial">
